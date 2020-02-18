@@ -1,0 +1,25 @@
+{
+  "name": "fullfatthings/samesiteexceptions",
+  "description": "provide exceptions to the same site flag depending on browser strings",
+  "minimum-stability": "stable",
+  "license": "APACHE-2",
+  "authors": [
+    {
+      "name": "Jeremy French",
+      "email": "jeremy@fullfatthings.com"
+    }
+  ],
+  "require-dev": {
+    "phpunit/phpunit": "^8.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "FullFatThings\\SameSiteException\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "FullFatThings\\SameSiteException\\Tests\\": "tests/"
+    }
+  }
+}
