@@ -18,7 +18,7 @@ jobs:
           coverage: xdebug
           tools: phpcs
 
-      - name: Test with phpunit
+      - name: Test with phpcs
         run: composer cs-check
 
   unit-tests:
