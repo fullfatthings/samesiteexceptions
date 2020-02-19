@@ -9,10 +9,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '7.3'
-          tools: phpstan
-      - name: Static Analysis using PHPStan
-        run: phpstan analyse --no-progress src/
+          name: Setup PHP
+          coverage: xdebug
+          tools: php-cs-fixer, phpunit
