@@ -1,25 +1,25 @@
 name: PHP Composer
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   phpcs:
     name: PHPCS
     runs-on: ubuntu-latest
-  steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '7.3'
-        name: Setup PHP
-        coverage: xdebug
-        tools: phpcs
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.3'
+          name: Setup PHP
+          coverage: xdebug
+          tools: phpcs
 
-    - name: Test with phpunit
-      run: composer cs-check
+      - name: Test with phpunit
+        run: composer cs-check
 
   unit-tests:
     name: phpunit
