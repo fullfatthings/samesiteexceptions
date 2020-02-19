@@ -1,6 +1,9 @@
 <?php
+
 /**
  * @file SameSiteException
+ *
+ * Manage values for samesite cookies and incompatible clients.
  *
  * Taken from pseudocode here
  * @see https://www.chromium.org/updates/same-site/incompatible-clients
@@ -8,20 +11,24 @@
 
 namespace FullFatThings\SameSiteException;
 
+use UnexpectedValueException;
+use Exception;
+
 class SameSiteException
 {
-    const SAFARI_REGEX = "/Version\/.* Safari\//";
-    const CHROME_REGEX = "/Chrom(e|ium)/";
-    const UCBROWSER_REGEX = "/UCBrowser\/(\d+)\.(\d+)\.(\d+)[\.\d]* /";
+    public const SAFARI_REGEX = "/Version\/.* Safari\//";
+    public const CHROME_REGEX = "/Chrom(e|ium)/";
+    public const UCBROWSER_REGEX = "/UCBrowser\/(\d+)\.(\d+)\.(\d+)[\.\d]* /";
 
-    const IOS_VERSION_REGEX = "/\(iP.+; CPU .*OS (\d+)[_\d]*.*\) AppleWebKit\//";
-    const OSX_VERSION_REGEX = "/\(Macintosh;.*Mac OS X (\d+)_(\d+)[_\d]*.*\) AppleWebKit\//";
-    const CHROME_VERSION_REGEX = "/Chrom[^ \/]+\/(\d+)[\.\d]* /";
+    public const IOS_VERSION_REGEX = "/\(iP.+; CPU .*OS (\d+)[_\d]*.*\) AppleWebKit\//";
+    public const OSX_VERSION_REGEX = "/\(Macintosh;.*Mac OS X (\d+)_(\d+)[_\d]*.*\) AppleWebKit\//";
+    public const CHROME_VERSION_REGEX = "/Chrom[^ \/]+\/(\d+)[\.\d]* /";
 
-
-    const VALID_SAMESITE_VALUES = ['None', 'Lax', 'Strict'];
+    public const VALID_SAMESITE_VALUES = ['None', 'Lax', 'Strict'];
 
     /**
+     * Get a safe string to use in a same site cookie for the given browser.
+     *
      * @param string $same_site
      *   The same site setting you wish to set.
      * @param string $user_agent_string
@@ -31,20 +38,29 @@ class SameSiteException
      *
      * @return string|null
      *   string for a safe string to use, null if you should not set SameSite at all.
+     *
+     * @throws \UnexpectedValueException
+     *   If the value passed is not valid for a same site cookie.
+     * @throws \Exception
+     *   If no user agent can be found in the server structure.
      */
     public static function getSafeString($same_site, $user_agent_string = null)
     {
         // Check for valid versions of same_site attribute
         if ($same_site != null && array_search($same_site, self::VALID_SAMESITE_VALUES) === false) {
-            trigger_error("Invalid samesite cookie value, dropping value", E_USER_NOTICE);
-            return null;
+            throw new UnexpectedValueException("value passed is not valid for a samesite cookie");
         }
-
 
         // get user agent if not passed.
         if ($user_agent_string == null) {
-            $user_agent_string = $_SERVER['HTTP_USER_AGENT'];
+            if (isset($_SERVER['HTTP_USER_AGENT']) && !empty($_SERVER['HTTP_USER_AGENT'])) {
+                $user_agent_string = $_SERVER['HTTP_USER_AGENT'];
+            } else {
+                throw new Exception("No User agent can be found to test");
+            }
         }
+
+
 
         // Drop the samesite value if it is incompatible.
         if ($same_site == 'None') {
@@ -101,7 +117,7 @@ class SameSiteException
     public static function dropsUnrecognizedSameSiteCookies($user_agent_string)
     {
         if (self::isUcBrowser($user_agent_string)) {
-            return self::isUcBrowserVersionAtLeast(12, 13, 2, $user_agent_string);
+            return !self::isUcBrowserVersionAtLeast(12, 13, 2, $user_agent_string);
         } elseif (self::isChromiumBased($user_agent_string)) {
                 return self::isChromiumVersionAtLeast(51, $user_agent_string) &&
                   ! self::isChromiumVersionAtLeast(67, $user_agent_string);
@@ -165,7 +181,7 @@ class SameSiteException
      */
     public static function isSafari($user_agent_string)
     {
-        return (boolean) preg_match(self::SAFARI_REGEX, $user_agent_string) && !self::isChromiumBased($user_agent_string);
+        return (bool) preg_match(self::SAFARI_REGEX, $user_agent_string) && !self::isChromiumBased($user_agent_string);
     }
 
     /**
@@ -177,7 +193,7 @@ class SameSiteException
      */
     public static function isChromiumBased($user_agent_string)
     {
-        return (boolean) preg_match(self::CHROME_REGEX, $user_agent_string);
+        return (bool) preg_match(self::CHROME_REGEX, $user_agent_string);
     }
 
 
@@ -213,7 +229,7 @@ class SameSiteException
      */
     public static function isUCBrowser($user_agent_string)
     {
-        return (boolean) preg_match(self::UCBROWSER_REGEX, $user_agent_string);
+        return (bool) preg_match(self::UCBROWSER_REGEX, $user_agent_string);
     }
 
 
