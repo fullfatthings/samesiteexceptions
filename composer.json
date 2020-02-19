@@ -2,7 +2,7 @@
   "name": "fullfatthings/samesiteexceptions",
   "description": "provide exceptions to the same site flag depending on browser strings",
   "minimum-stability": "stable",
-  "license": "APACHE-2",
+  "license": "Apache-2.0",
   "authors": [
     {
       "name": "Jeremy French",
