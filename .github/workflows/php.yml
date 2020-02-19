@@ -1,0 +1,44 @@
+name: PHP Composer
+
+on: [push]
+
+jobs:
+  phpcs:
+    name: PHPCS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.3'
+          name: Setup PHP
+          coverage: xdebug
+          tools: phpcs
+
+      - name: Test with phpcs
+        run: composer cs-check
+
+  unit-tests:
+    name: phpunit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.3'
+          name: Setup PHP
+          coverage: xdebug
+          tools: phpunit
+
+
+      - name: Install Composer dependencies
+        run: composer install --no-progress --no-suggest --prefer-dist --optimize-autoloader
+
+      - name: Test with phpunit
+        run: composer test
