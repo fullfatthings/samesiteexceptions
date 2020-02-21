@@ -1,4 +1,7 @@
 # SAME SITE EXCEPTION PHP LIBRARY
+
+![PHP Composer](https://github.com/fullfatthings/samesiteexceptions/workflows/PHP%20Composer/badge.svg)
+
 This is a light weight library you can include if you need to set samesite cookies but also need to account for older browsers that have issues with accepting them.
 
 There is currently a backwards compatible breaking change in the way Chrome 70+ handles cookies, this means that you
