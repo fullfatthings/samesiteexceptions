@@ -4,8 +4,11 @@ on: [push]
 
 jobs:
   phpcs:
-    name: PHPCS
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-versions: ['5.6', '7.0', '7.1', '7.2', '7.3', '7.4']
+    name: Checkout { matrix.php-versions }
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -13,17 +16,23 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.3'
+          php-version: ${{ matrix.php-versions }}
           name: Setup PHP
           coverage: xdebug
           tools: phpcs
+
+      - name: Test validate composer
+        run: composer cs-check
 
       - name: Test with phpcs
         run: composer cs-check
 
   unit-tests:
-    name: phpunit
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-versions: ['5.6', '7.0', '7.1', '7.2', '7.3', '7.4']
+    name: phpunit { matrix.php-versions }
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -45,6 +54,7 @@ jobs:
 
       - name: Upload Coverage
         uses: codecov/codecov-action@v1
+        if: matrix.php-version == 7.3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./clover.xml
