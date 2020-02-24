@@ -24,7 +24,7 @@ class SameSiteException
     const OSX_VERSION_REGEX = "/\(Macintosh;.*Mac OS X (\d+)_(\d+)[_\d]*.*\) AppleWebKit\//";
     const CHROME_VERSION_REGEX = "/Chrom[^ \/]+\/(\d+)[\.\d]* /";
 
-    public $VALID_SAMESITE_VALUES = ['None', 'Lax', 'Strict'];
+    public static $VALID_SAMESITE_VALUES = ['None', 'Lax', 'Strict'];
 
     /**
      * Get a safe string to use in a same site cookie for the given browser.
@@ -47,7 +47,7 @@ class SameSiteException
     public static function getSafeString($same_site, $user_agent_string = null)
     {
         // Check for valid versions of same_site attribute
-        if ($same_site != null && array_search($same_site, self::VALID_SAMESITE_VALUES) === false) {
+        if ($same_site != null && array_search($same_site, self::$VALID_SAMESITE_VALUES) === false) {
             throw new UnexpectedValueException("value passed is not valid for a samesite cookie");
         }
 
