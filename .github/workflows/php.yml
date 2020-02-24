@@ -43,14 +43,6 @@ jobs:
           coverage: xdebug
           tools: phpunit
 
-      - name: Cache dependencies
-        uses: actions/cache@v1
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: composer-
-
-
       - name: Install Composer dependencies
         run: composer install --no-suggest --prefer-dist --optimize-autoloader
 
