@@ -1,6 +1,8 @@
 # SAME SITE EXCEPTION PHP LIBRARY
 
-![PHP Composer](https://github.com/fullfatthings/samesiteexceptions/workflows/PHP%20Composer/badge.svg)
+
+[![PHP Tests](https://github.com/fullfatthings/samesiteexceptions/workflows/PHP%20Tests/badge.svg)](https://github.com/fullfatthings/samesiteexceptions/actions?query=workflow%3A%22PHP+Tests%22)
+[![codecov](https://codecov.io/gh/fullfatthings/samesiteexceptions/branch/master/graph/badge.svg)](https://codecov.io/gh/fullfatthings/samesiteexceptions)
 
 This is a light weight library you can include if you need to set samesite cookies but also need to account for older browsers that have issues with accepting them.
 
