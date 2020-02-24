@@ -16,15 +16,15 @@ use Exception;
 
 class SameSiteException
 {
-    public const SAFARI_REGEX = "/Version\/.* Safari\//";
-    public const CHROME_REGEX = "/Chrom(e|ium)/";
-    public const UCBROWSER_REGEX = "/UCBrowser\/(\d+)\.(\d+)\.(\d+)[\.\d]* /";
+    const SAFARI_REGEX = "/Version\/.* Safari\//";
+    const CHROME_REGEX = "/Chrom(e|ium)/";
+    const UCBROWSER_REGEX = "/UCBrowser\/(\d+)\.(\d+)\.(\d+)[\.\d]* /";
 
-    public const IOS_VERSION_REGEX = "/\(iP.+; CPU .*OS (\d+)[_\d]*.*\) AppleWebKit\//";
-    public const OSX_VERSION_REGEX = "/\(Macintosh;.*Mac OS X (\d+)_(\d+)[_\d]*.*\) AppleWebKit\//";
-    public const CHROME_VERSION_REGEX = "/Chrom[^ \/]+\/(\d+)[\.\d]* /";
+    const IOS_VERSION_REGEX = "/\(iP.+; CPU .*OS (\d+)[_\d]*.*\) AppleWebKit\//";
+    const OSX_VERSION_REGEX = "/\(Macintosh;.*Mac OS X (\d+)_(\d+)[_\d]*.*\) AppleWebKit\//";
+    const CHROME_VERSION_REGEX = "/Chrom[^ \/]+\/(\d+)[\.\d]* /";
 
-    public const VALID_SAMESITE_VALUES = ['None', 'Lax', 'Strict'];
+    public $VALID_SAMESITE_VALUES = ['None', 'Lax', 'Strict'];
 
     /**
      * Get a safe string to use in a same site cookie for the given browser.
