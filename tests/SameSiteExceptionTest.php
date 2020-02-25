@@ -66,7 +66,7 @@ class SameSiteExceptionTest extends TestCase
      *
      * @param string $user_agent
      *   User agent string.
-     * @param int version
+     * @param integer $version
      *   Version to match for.
      * @param boolean $match
      *   Should match be true or false.

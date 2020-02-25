@@ -24,6 +24,26 @@ jobs:
       - name: Test with phpcs
         run: composer cs-check
 
+  static-analysis:
+    runs-on: ubuntu-latest
+    name: Static Analysis
+    needs: phpcs
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.3
+          name: Setup PHP
+
+      - name: Install phpstant
+        run: composer require --dev phpstan/phpstan
+
+      - name: Run phpstan
+        run: composer stan
+
   unit-tests:
     runs-on: ubuntu-latest
     needs: phpcs

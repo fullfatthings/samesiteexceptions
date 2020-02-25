@@ -209,7 +209,7 @@ class SameSiteException
      *
      * @param int $major
      *   Major version number
-     * @param $user_agent_string
+     * @param string $user_agent_string
      *   User agent string to test.
      *
      * @return bool
