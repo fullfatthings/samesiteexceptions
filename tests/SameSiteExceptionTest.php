@@ -31,13 +31,22 @@ class SameSiteExceptionTest extends TestCase
     }
 
     /**
-     * Check error thrown if no browser string available.
+     * Check error thrown if no browser string available and errors not ignored.
      * @covers ::getSafeString
      */
     public function testGetSafeStringBrowserStringException()
     {
         $this->expectException('\Exception');
-        SameSiteException::getSafeString('Lax');
+        SameSiteException::getSafeString('Lax', null, false);
+    }
+
+    /**
+     * Check no error thrown in cli mode if no browser string and errors ignored.
+     * @covers ::getSafeString
+     */
+    public function testGetSafeStringBrowserStringNoException()
+    {
+        $this->assertEquals('Lax', SameSiteException::getSafeString('Lax', null, true));
     }
 
     /**

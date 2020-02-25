@@ -34,6 +34,9 @@ class SameSiteException
      * @param string $user_agent_string
      *   The user agent string string for the request. if null this will try
      *   to take from the current request.
+     * @param boolean $ignore_cli_errors
+     *   Normally if php cli is used exceptions will not be thrown if no user agent.
+     *   Set this to false and errors will be thrown.
      *
      *
      * @return string|null
@@ -44,7 +47,7 @@ class SameSiteException
      * @throws \Exception
      *   If no user agent can be found in the server structure.
      */
-    public static function getSafeString($same_site, $user_agent_string = null)
+    public static function getSafeString($same_site, $user_agent_string = null, $ignore_cli_errors = true)
     {
         // Check for valid versions of same_site attribute
         if ($same_site != null && array_search($same_site, self::$VALID_SAMESITE_VALUES) === false) {
@@ -56,7 +59,11 @@ class SameSiteException
             if (isset($_SERVER['HTTP_USER_AGENT']) && !empty($_SERVER['HTTP_USER_AGENT'])) {
                 $user_agent_string = $_SERVER['HTTP_USER_AGENT'];
             } else {
-                throw new Exception("No User agent can be found to test");
+                if (php_sapi_name() != 'cli' || (php_sapi_name() === 'cli' && !$ignore_cli_errors)) {
+                    throw new Exception("No User agent can be found to test");
+                } else {
+                    return $same_site;
+                }
             }
         }
 
