@@ -16,15 +16,15 @@ use Exception;
 
 class SameSiteException
 {
-    public const SAFARI_REGEX = "/Version\/.* Safari\//";
-    public const CHROME_REGEX = "/Chrom(e|ium)/";
-    public const UCBROWSER_REGEX = "/UCBrowser\/(\d+)\.(\d+)\.(\d+)[\.\d]* /";
+    const SAFARI_REGEX = "/Version\/.* Safari\//";
+    const CHROME_REGEX = "/Chrom(e|ium)/";
+    const UCBROWSER_REGEX = "/UCBrowser\/(\d+)\.(\d+)\.(\d+)[\.\d]* /";
 
-    public const IOS_VERSION_REGEX = "/\(iP.+; CPU .*OS (\d+)[_\d]*.*\) AppleWebKit\//";
-    public const OSX_VERSION_REGEX = "/\(Macintosh;.*Mac OS X (\d+)_(\d+)[_\d]*.*\) AppleWebKit\//";
-    public const CHROME_VERSION_REGEX = "/Chrom[^ \/]+\/(\d+)[\.\d]* /";
+    const IOS_VERSION_REGEX = "/\(iP.+; CPU .*OS (\d+)[_\d]*.*\) AppleWebKit\//";
+    const OSX_VERSION_REGEX = "/\(Macintosh;.*Mac OS X (\d+)_(\d+)[_\d]*.*\) AppleWebKit\//";
+    const CHROME_VERSION_REGEX = "/Chrom[^ \/]+\/(\d+)[\.\d]* /";
 
-    public const VALID_SAMESITE_VALUES = ['None', 'Lax', 'Strict'];
+    public static $VALID_SAMESITE_VALUES = ['None', 'Lax', 'Strict'];
 
     /**
      * Get a safe string to use in a same site cookie for the given browser.
@@ -47,7 +47,7 @@ class SameSiteException
     public static function getSafeString($same_site, $user_agent_string = null)
     {
         // Check for valid versions of same_site attribute
-        if ($same_site != null && array_search($same_site, self::VALID_SAMESITE_VALUES) === false) {
+        if ($same_site != null && array_search($same_site, self::$VALID_SAMESITE_VALUES) === false) {
             throw new UnexpectedValueException("value passed is not valid for a samesite cookie");
         }
 

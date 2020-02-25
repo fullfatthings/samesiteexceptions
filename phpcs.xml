@@ -4,11 +4,12 @@
     <file>src</file>
     <file>tests</file>
     <exclude-pattern>vendor/*</exclude-pattern>
-    <rule ref="PSR12"/>
+    <rule ref="PSR12">
+        <exclude name="PSR12.Properties.ConstantVisibility.NotFound" />
+    </rule>
     <rule ref="Generic.Files.LineLength">
         <properties>
-            <property name="lineLimit" value="200"/>
+            <property name="lineLimit" value="300"/>
         </properties>
     </rule>
-
 </ruleset>

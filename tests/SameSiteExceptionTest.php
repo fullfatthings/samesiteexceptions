@@ -1,7 +1,10 @@
 <?php
 
 /**
- * @file
+ * @file SameSiteExceptionTest
+ *
+ * Tests for the same site exception class.
+ *
  */
 
 namespace FullFatThings\SameSiteException\Tests;
@@ -46,68 +49,6 @@ class SameSiteExceptionTest extends TestCase
         // No exception should be shown.
         $this->assertEquals('Lax', SameSiteException::getSafeString('Lax'));
     }
-
-
-    /**
-     * @covers ::getSafeString
-     * @dataProvider getSafeStringProvider
-     * @depends testIsSameSiteNoneIncompatible
-     *
-     * @param string $safe_string
-     *   The safe string
-     * @param string $user_agent
-     *   The user agent
-     * @param string $expected
-     *   The expected safe string
-     * @throws \Exception
-     */
-    public function testGetSafeString($safe_string, $user_agent, $expected)
-    {
-        $this->assertEquals($expected, SameSiteException::getSafeString($safe_string, $user_agent));
-    }
-
-    public static function getSafeStringProvider()
-    {
-        return [
-          'chrome 70 Lax' => ["Lax", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3163.100 Safari/537.36", "Lax"],
-          'chrome 70 None' => ["None", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3163.100 Safari/537.36", "None"],
-          'chrome 70 Strict' => ["Strict", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3163.100 Safari/537.36", "Strict"],
-          'IOS 12 Lax' => ["Lax", "Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/ 604.1.21 (KHTML, like Gecko) Version/ 12.0 Mobile/17A6278a Safari/602.1.26", "Lax"],
-          'IOS 12 Strict' => ["Strict", "Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/ 604.1.21 (KHTML, like Gecko) Version/ 12.0 Mobile/17A6278a Safari/602.1.26", "Strict"],
-          'IOS 12 None' => ["None", "Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/ 604.1.21 (KHTML, like Gecko) Version/ 12.0 Mobile/17A6278a Safari/602.1.26", null],
-          'Safari OSX 10.14 Lax' => ["Lax", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Safari/605.1.15", "Lax"],
-          'Safari OSX 10.14 Strict' => ["Strict", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Safari/605.1.15", "Strict"],
-          'Safari OSX 10.14 None' => ["None", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Safari/605.1.15", null]
-        ];
-    }
-
-
-    /**
-     * @covers ::isSameSiteNoneIncompatible
-     * @dataProvider isSameSiteNoneIncompatibleProvider
-     * @depends testHasWebKitSameSiteBug
-     * @depends testDropsUnrecognizedSameSiteCookies
-     *
-     * @param string $user_agent
-     *   The user agent.
-     * @param bool $expected_compatibility
-     *   Expected return value.
-     */
-    public function testIsSameSiteNoneIncompatible($user_agent, $expected_compatibility)
-    {
-        $this->assertEquals($expected_compatibility, SameSiteException::isSameSiteNoneIncompatible($user_agent));
-    }
-
-    public static function isSameSiteNoneIncompatibleProvider()
-    {
-        return [
-          'Chrome 70' => ["Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3163.100 Safari/537.36", false],
-          'Safari OSX 10.14' => ["Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Safari/605.1.15", true],
-          'IOS 12' => ["Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/ 604.1.21 (KHTML, like Gecko) Version/ 12.0 Mobile/17A6278a Safari/602.1.26", true]
-        ];
-    }
-
-
 
     /**
      * @covers ::isIosVersion()
@@ -192,7 +133,6 @@ class SameSiteExceptionTest extends TestCase
         ];
     }
 
-
     /**
      * @covers ::isChromiumBased
      *
@@ -216,7 +156,6 @@ class SameSiteExceptionTest extends TestCase
           'Chromium safari' => ["Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36", true]
         ];
     }
-
 
     /**
      * @covers ::hasWebKitSameSiteBug
@@ -327,7 +266,6 @@ class SameSiteExceptionTest extends TestCase
         ];
     }
 
-
     /**
      * @covers ::dropsUnrecognizedSameSiteCookies
      * @dataProvider dropsUnrecognizedSameSiteCookiesProvider
@@ -356,5 +294,63 @@ class SameSiteExceptionTest extends TestCase
         'Chrome 70' => ["Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3163.100 Safari/537.36", false],
         'firefox' => ['Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:57.0) Gecko/20100101 Firefox/57.0', false],
             ];
+    }
+
+    /**
+     * @covers ::isSameSiteNoneIncompatible
+     * @dataProvider isSameSiteNoneIncompatibleProvider
+     * @depends testHasWebKitSameSiteBug
+     * @depends testDropsUnrecognizedSameSiteCookies
+     *
+     * @param string $user_agent
+     *   The user agent.
+     * @param bool $expected_compatibility
+     *   Expected return value.
+     */
+    public function testIsSameSiteNoneIncompatible($user_agent, $expected_compatibility)
+    {
+        $this->assertEquals($expected_compatibility, SameSiteException::isSameSiteNoneIncompatible($user_agent));
+    }
+
+    public static function isSameSiteNoneIncompatibleProvider()
+    {
+        return [
+          'Chrome 70' => ["Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3163.100 Safari/537.36", false],
+          'Safari OSX 10.14' => ["Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Safari/605.1.15", true],
+          'IOS 12' => ["Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/ 604.1.21 (KHTML, like Gecko) Version/ 12.0 Mobile/17A6278a Safari/602.1.26", true]
+        ];
+    }
+
+    /**
+     * @covers ::getSafeString
+     * @dataProvider getSafeStringProvider
+     * @depends testIsSameSiteNoneIncompatible
+     *
+     * @param string $safe_string
+     *   The safe string
+     * @param string $user_agent
+     *   The user agent
+     * @param string $expected
+     *   The expected safe string
+     * @throws \Exception
+     */
+    public function testGetSafeString($safe_string, $user_agent, $expected)
+    {
+        $this->assertEquals($expected, SameSiteException::getSafeString($safe_string, $user_agent));
+    }
+
+    public static function getSafeStringProvider()
+    {
+        return [
+          'chrome 70 Lax' => ["Lax", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3163.100 Safari/537.36", "Lax"],
+          'chrome 70 None' => ["None", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3163.100 Safari/537.36", "None"],
+          'chrome 70 Strict' => ["Strict", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3163.100 Safari/537.36", "Strict"],
+          'IOS 12 Lax' => ["Lax", "Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/ 604.1.21 (KHTML, like Gecko) Version/ 12.0 Mobile/17A6278a Safari/602.1.26", "Lax"],
+          'IOS 12 Strict' => ["Strict", "Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/ 604.1.21 (KHTML, like Gecko) Version/ 12.0 Mobile/17A6278a Safari/602.1.26", "Strict"],
+          'IOS 12 None' => ["None", "Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/ 604.1.21 (KHTML, like Gecko) Version/ 12.0 Mobile/17A6278a Safari/602.1.26", null],
+          'Safari OSX 10.14 Lax' => ["Lax", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Safari/605.1.15", "Lax"],
+          'Safari OSX 10.14 Strict' => ["Strict", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Safari/605.1.15", "Strict"],
+          'Safari OSX 10.14 None' => ["None", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Safari/605.1.15", null]
+        ];
     }
 }

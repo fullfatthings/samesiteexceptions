@@ -4,8 +4,8 @@ on: [push]
 
 jobs:
   phpcs:
-    name: PHPCS
     runs-on: ubuntu-latest
+    name: Composer and Code validation
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -13,17 +13,25 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.3'
+          php-version: 7.3
           name: Setup PHP
           coverage: xdebug
           tools: phpcs
+
+      - name: Test validate composer
+        run: composer validate
 
       - name: Test with phpcs
         run: composer cs-check
 
   unit-tests:
-    name: phpunit
     runs-on: ubuntu-latest
+    needs: phpcs
+    strategy:
+      fail-fast: false
+      matrix:
+        php-versions: ['5.6', '7.0', '7.1', '7.2', '7.3', '7.4']
+    name: phpunit
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -31,11 +39,10 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.3'
+          php-version: ${{ matrix.php-versions }}
           name: Setup PHP
           coverage: xdebug
           tools: phpunit
-
 
       - name: Install Composer dependencies
         run: composer install --no-suggest --prefer-dist --optimize-autoloader
@@ -45,6 +52,7 @@ jobs:
 
       - name: Upload Coverage
         uses: codecov/codecov-action@v1
+        if: matrix.php-version == 7.3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           file: ./clover.xml
