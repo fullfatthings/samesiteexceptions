@@ -24,7 +24,7 @@ class SameSiteException
     const OSX_VERSION_REGEX = "/\(Macintosh;.*Mac OS X (\d+)_(\d+)[_\d]*.*\) AppleWebKit\//";
     const CHROME_VERSION_REGEX = "/Chrom[^ \/]+\/(\d+)[\.\d]* /";
 
-    public static $VALID_SAMESITE_VALUES = ['None', 'Lax', 'Strict'];
+    public static $VALID_SAMESITE_VALUES = array('None', 'Lax', 'Strict');
 
     /**
      * Get a safe string to use in a same site cookie for the given browser.
@@ -147,7 +147,7 @@ class SameSiteException
      */
     public static function isMacosxVersion($major, $minor, $user_agent_string)
     {
-        $matches = [];
+        $matches = array();
         if (preg_match(self::OSX_VERSION_REGEX, $user_agent_string, $matches)) {
             if ($matches[1] == $major && $matches[2] == $minor) {
                 return true;
@@ -168,7 +168,7 @@ class SameSiteException
      */
     public static function isIosVersion($major, $user_agent_string)
     {
-        $matches = [];
+        $matches = array();
         if (preg_match(self::IOS_VERSION_REGEX, $user_agent_string, $matches)) {
             if ($matches[1] == $major) {
                 return true;
@@ -217,7 +217,7 @@ class SameSiteException
      */
     public static function isChromiumVersionAtLeast($major, $user_agent_string)
     {
-        $matches = [];
+        $matches = array();
         if (preg_match(self::CHROME_VERSION_REGEX, $user_agent_string, $matches)) {
             return $major <= $matches[1];
         }
@@ -257,7 +257,7 @@ class SameSiteException
      */
     public static function isUcBrowserVersionAtLeast($major, $minor, $build, $user_agent_string)
     {
-        $matches = [];
+        $matches = array();
         if (preg_match(self::UCBROWSER_REGEX, $user_agent_string, $matches)) {
             if ($major != $matches[1]) {
                 return ($major < $matches[1]);
