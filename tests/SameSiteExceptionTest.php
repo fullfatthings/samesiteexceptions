@@ -167,6 +167,32 @@ class SameSiteExceptionTest extends TestCase
     }
 
     /**
+     * @covers ::isMacEmbeddedBrowser
+     *
+     * @dataProvider isMacEmbeddedBrowserProvider()
+     *
+     * @param string $user_agent
+     *   User agent string
+     * @param bool $match
+     *   Should the string match.
+     */
+    public function testIsMacEmbeddedBrowser($user_agent, $match)
+    {
+        $this->assertEquals($match, SameSiteException::isMacEmbeddedBrowser($user_agent));
+    }
+
+    public static function isMacEmbeddedBrowserProvider()
+    {
+        return array(
+            'Embedded Mac 10.14' => array("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/605.1.15 (KHTML, like Gecko)", true),
+            'Embedded Mac 10.15' => array("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/605.1.15 (KHTML, like Gecko)", true),
+            'firefox' => array("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:57.0) Gecko/20100101 Firefox/57.0", false),
+            'Native safari' => array("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/604.5.6 (KHTML, like Gecko) Version/11.0.3 Safari/604.5.6", false),
+            'Chromium safari' => array("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36", false)
+        );
+    }
+
+    /**
      * @covers ::isChromiumBased
      *
      * @dataProvider isChromiumBasedProvider()
@@ -369,7 +395,7 @@ class SameSiteExceptionTest extends TestCase
      */
     public function testGetSafeString($safe_string, $user_agent, $expected)
     {
-        $this->assertEquals($expected, SameSiteException::getSafeString($safe_string, $user_agent));
+        $this->assertEquals($expected, SameSiteException::getSafeString($safe_string, $user_agent), $user_agent);
     }
 
     public static function getSafeStringProvider()
@@ -383,7 +409,9 @@ class SameSiteExceptionTest extends TestCase
           'IOS 12 None' => array("None", "Mozilla/5.0 (iPhone; CPU iPhone OS 12_0 like Mac OS X) AppleWebKit/ 604.1.21 (KHTML, like Gecko) Version/ 12.0 Mobile/17A6278a Safari/602.1.26", null),
           'Safari OSX 10.14 Lax' => array("Lax", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Safari/605.1.15", "Lax"),
           'Safari OSX 10.14 Strict' => array("Strict", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Safari/605.1.15", "Strict"),
-          'Safari OSX 10.14 None' => array("None", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Safari/605.1.15", null)
+          'Safari OSX 10.14 None' => array("None", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Safari/605.1.15", null),
+          'Embedded Mac with support' => array("None",'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/605.1.15 (KHTML, like Gecko)', "None"),
+          'Embedded Mac without support' => array("None",'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_4) AppleWebKit/605.1.15 (KHTML, like Gecko)', null),
         );
     }
 }
