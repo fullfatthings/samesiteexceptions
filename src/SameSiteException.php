@@ -19,6 +19,7 @@ class SameSiteException
     const SAFARI_REGEX = "/Version\/.* Safari\//";
     const CHROME_REGEX = "/Chrom(e|ium)/";
     const UCBROWSER_REGEX = "/UCBrowser\/(\d+)\.(\d+)\.(\d+)[\.\d]* /";
+    const EMBEDDED_MAC_REGEX = "|Mozilla.*\(Macintosh;.*Mac OS X [_\d]+\).*AppleWebKit/[\.\d]+ \(KHTML, like Gecko\)$|";
 
     const IOS_VERSION_REGEX = "/\(iP.+; CPU .*OS (\d+)[_\d]*.*\) AppleWebKit\//";
     const OSX_VERSION_REGEX = "/\(Macintosh;.*Mac OS X (\d+)_(\d+)[_\d]*.*\) AppleWebKit\//";
@@ -105,11 +106,22 @@ class SameSiteException
         return (self::isIosVersion(12, $user_agent_string) ||
           (
             self::isMacosxVersion(10, 14, $user_agent_string) &&
-            self::isSafari($user_agent_string)
-            // NB: have not included isMacEmbeddedBrowser.
+            (self::isSafari($user_agent_string) || self::isMacEmbeddedBrowser($user_agent_string))
           )
 
         );
+    }
+
+    /**
+     * Detect if the user agent string is a Mac embedded browser
+     * @param string $user_agent_string
+     *   User agent string to test.
+     * @return bool
+     *   True if the given user agent is Mac embedded browser.
+     */
+    public static function isMacEmbeddedBrowser($user_agent_string)
+    {
+        return (bool) preg_match(self::EMBEDDED_MAC_REGEX, $user_agent_string);
     }
 
     /**
